@@ -1,6 +1,8 @@
 /* CUSTOMERS — DATA TYPE FIXES */
 ALTER TABLE main.customers ALTER COLUMN date_of_birth TYPE DATE;
 
+
+
 /* CUSTOMERS — QUALITY CHECKS */
 
 -- Row count
