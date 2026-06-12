@@ -1,12 +1,10 @@
 /* CUSTOMERS — DATA TYPE FIXES */
-ALTER TABLE main.customers ALTER COLUMN date_of_birth TYPE DATE;
-
-
+ALTER TABLE rataioDB.customers ALTER COLUMN date_of_birth TYPE DATE;
 
 /* CUSTOMERS — QUALITY CHECKS */
 
 -- Row count
-SELECT COUNT(*) AS row_count_customers FROM main.customers;
+SELECT COUNT(*) AS row_count_customers FROM rataioDB.customers;
 
 -- Null completeness
 SELECT
@@ -17,39 +15,39 @@ SELECT
   SUM(CASE WHEN address IS NULL THEN 1 END) AS missing_address,
   SUM(CASE WHEN customer_id IS NULL THEN 1 END) AS missing_customer_id,
   SUM(CASE WHEN date_of_birth IS NULL THEN 1 END) AS missing_date_of_birth
-FROM main.customers;
+FROM rataioDB.customers;
 
 -- Duplicate check
 SELECT customer_id, COUNT(*) 
-FROM main.customers 
+FROM rataioDB.customers 
 GROUP BY customer_id 
 HAVING COUNT(*) > 1;
 
 -- Validity checks
-SELECT * FROM main.customers WHERE email NOT LIKE '%@%';
-SELECT * FROM main.customers WHERE LOWER(gender) NOT IN ('male','female','other');
-SELECT * FROM main.customers WHERE date_of_birth IS NULL;
-SELECT * FROM main.customers WHERE DATE_DIFF('year', date_of_birth, CURRENT_DATE) < 18;
+SELECT * FROM rataioDB.customers WHERE email NOT LIKE '%@%';
+SELECT * FROM rataioDB.customers WHERE LOWER(gender) NOT IN ('male','female','other');
+SELECT * FROM rataioDB.customers WHERE date_of_birth IS NULL;
+SELECT * FROM rataioDB.customers WHERE DATE_DIFF('year', date_of_birth, CURRENT_DATE) < 18;
 
 -- Business logic
-SELECT * FROM main.customers WHERE TRIM(name) = '';
-SELECT * FROM main.customers WHERE TRIM(address) = '';
-SELECT * FROM main.customers WHERE LOWER(state) IN ('unknown','n/a','none');
+SELECT * FROM rataioDB.customers WHERE TRIM(name) = '';
+SELECT * FROM rataioDB.customers WHERE TRIM(address) = '';
+SELECT * FROM rataioDB.customers WHERE LOWER(state) IN ('unknown','n/a','none');
 
 -- Schema
-DESCRIBE main.customers;
+DESCRIBE rataioDB.customers;
 
 /* PRODUCTS — DATA TYPE FIXES */
-ALTER TABLE main.products ALTER COLUMN price TYPE DECIMAL(34,2);
-ALTER TABLE main.products ALTER COLUMN stock_quantity TYPE INTEGER;
-ALTER TABLE main.products ALTER COLUMN product_ratings TYPE DECIMAL(2,1);
-ALTER TABLE main.products ALTER COLUMN expiration_date TYPE DATE;
-ALTER TABLE main.products ALTER COLUMN manufacturing_date TYPE DATE;
+ALTER TABLE rataioDB.products ALTER COLUMN price TYPE DECIMAL(34,2);
+ALTER TABLE rataioDB.products ALTER COLUMN stock_quantity TYPE INTEGER;
+ALTER TABLE rataioDB.products ALTER COLUMN product_ratings TYPE DECIMAL(2,1);
+ALTER TABLE rataioDB.products ALTER COLUMN expiration_date TYPE DATE;
+ALTER TABLE rataioDB.products ALTER COLUMN manufacturing_date TYPE DATE;
 
 /* PRODUCTS — QUALITY CHECKS */
 
 -- Row count
-SELECT COUNT(*) AS row_count_products FROM main.products;
+SELECT COUNT(*) AS row_count_products FROM rataioDB.products;
 
 -- Null completeness
 SELECT
@@ -67,42 +65,42 @@ SELECT
   SUM(CASE WHEN product_dimensions IS NULL THEN 1 END) AS missing_product_dimensions,
   SUM(CASE WHEN product_description IS NULL THEN 1 END) AS missing_product_description,
   SUM(CASE WHEN color_size_variations IS NULL THEN 1 END) AS missing_color_size_variations
-FROM main.products;
+FROM rataioDB.products;
 
 -- Duplicate check
 SELECT product_id, COUNT(*) 
-FROM main.products 
+FROM rataioDB.products 
 GROUP BY product_id 
 HAVING COUNT(*) > 1;
 
 -- Validation
-SELECT * FROM main.products WHERE price IS NULL OR price < 0;
-SELECT * FROM main.products WHERE stock_quantity IS NULL OR stock_quantity < 0;
-SELECT * FROM main.products WHERE product_ratings NOT BETWEEN 0 AND 5;
-SELECT * FROM main.products WHERE expiration_date IS NULL;
-SELECT * FROM main.products WHERE manufacturing_date IS NULL;
+SELECT * FROM rataioDB.products WHERE price IS NULL OR price < 0;
+SELECT * FROM rataioDB.products WHERE stock_quantity IS NULL OR stock_quantity < 0;
+SELECT * FROM rataioDB.products WHERE product_ratings NOT BETWEEN 0 AND 5;
+SELECT * FROM rataioDB.products WHERE expiration_date IS NULL;
+SELECT * FROM rataioDB.products WHERE manufacturing_date IS NULL;
 
 -- Business logic
-SELECT * FROM main.products WHERE expiration_date <= manufacturing_date;
-SELECT * FROM main.products WHERE TRIM(product_name) = '';
-SELECT * FROM main.products WHERE LOWER(product_category) IN ('unknown','n/a','none');
+SELECT * FROM rataioDB.products WHERE expiration_date <= manufacturing_date;
+SELECT * FROM rataioDB.products WHERE TRIM(product_name) = '';
+SELECT * FROM rataioDB.products WHERE LOWER(product_category) IN ('unknown','n/a','none');
 
 -- Schema
-DESCRIBE main.products;
+DESCRIBE rataioDB.products;
 
 /* SALES — DATA TYPE FIXES */
-ALTER TABLE main.sales ALTER COLUMN sales TYPE DECIMAL(38,2);
-ALTER TABLE main.sales ALTER COLUMN profit TYPE DECIMAL(38,2);
-ALTER TABLE main.sales ALTER COLUMN discount TYPE DECIMAL(38,2);
-ALTER TABLE main.sales ALTER COLUMN quantity TYPE INTEGER;
-ALTER TABLE main.sales ALTER COLUMN row_id TYPE INTEGER;
-ALTER TABLE main.sales ALTER COLUMN ship_date TYPE DATE;
-ALTER TABLE main.sales ALTER COLUMN order_date TYPE DATE;
+ALTER TABLE rataioDB.sales ALTER COLUMN sales TYPE DECIMAL(38,2);
+ALTER TABLE rataioDB.sales ALTER COLUMN profit TYPE DECIMAL(38,2);
+ALTER TABLE rataioDB.sales ALTER COLUMN discount TYPE DECIMAL(38,2);
+ALTER TABLE rataioDB.sales ALTER COLUMN quantity TYPE INTEGER;
+ALTER TABLE rataioDB.sales ALTER COLUMN row_id TYPE INTEGER;
+ALTER TABLE rataioDB.sales ALTER COLUMN ship_date TYPE DATE;
+ALTER TABLE rataioDB.sales ALTER COLUMN order_date TYPE DATE;
 
 /* SALES — QUALITY CHECKS */
 
 -- Row count
-SELECT COUNT(*) AS row_count_sales FROM main.sales;
+SELECT COUNT(*) AS row_count_sales FROM rataioDB.sales;
 
 -- Null completeness
 SELECT
@@ -127,32 +125,31 @@ SELECT
   SUM(CASE WHEN product_name IS NULL THEN 1 END) AS missing_product_name,
   SUM(CASE WHEN sub_category IS NULL THEN 1 END) AS missing_sub_category,
   SUM(CASE WHEN customer_name IS NULL THEN 1 END) AS missing_customer_name
-FROM main.sales;
+FROM rataioDB.sales;
 
 -- Duplicate checks
 SELECT row_id, COUNT(*) 
-FROM main.sales 
+FROM rataioDB.sales 
 GROUP BY row_id 
 HAVING COUNT(*) > 1;
 
 SELECT order_id, product_id, COUNT(*) 
-FROM main.sales 
+FROM rataioDB.sales 
 GROUP BY order_id, product_id 
 HAVING COUNT(*) > 1;
 
 -- Validation
-SELECT * FROM main.sales WHERE sales IS NULL OR sales < 0;
-SELECT * FROM main.sales WHERE profit IS NULL;
-SELECT * FROM main.sales WHERE discount NOT BETWEEN 0 AND 1;
-SELECT * FROM main.sales WHERE quantity IS NULL OR quantity <= 0;
-SELECT * FROM main.sales WHERE order_date IS NULL OR ship_date IS NULL;
+SELECT * FROM rataioDB.sales WHERE sales IS NULL OR sales < 0;
+SELECT * FROM rataioDB.sales WHERE profit IS NULL;
+SELECT * FROM rataioDB.sales WHERE discount NOT BETWEEN 0 AND 1;
+SELECT * FROM rataioDB.sales WHERE quantity IS NULL OR quantity <= 0;
+SELECT * FROM rataioDB.sales WHERE order_date IS NULL OR ship_date IS NULL;
 
 -- Business logic
-SELECT * FROM main.sales WHERE ship_date < order_date;
-SELECT * FROM main.sales WHERE profit > sales;
+SELECT * FROM rataioDB.sales WHERE ship_date < order_date;
+SELECT * FROM rataioDB.sales WHERE profit > sales;
 
 -- Schema
-DESCRIBE main.sales;
+DESCRIBE rataioDB.sales;
 
-
-describe main.products
+DESCRIBE rataioDB.products;
